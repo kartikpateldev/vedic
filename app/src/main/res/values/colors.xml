@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#f57c00</color>
+    <color name="colorAccentLight">#30f57c00</color>
+    <color name="colorGreyLight">#747474</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+
+    <color name="avatarBackgroundColor">#4DA0A0A0</color> <!-- 30% opacity -->
+    <color name="avatarTextColor">#A0A0A0</color>
+
+</resources>
+

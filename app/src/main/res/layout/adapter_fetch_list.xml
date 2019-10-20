@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginStart="@dimen/_10dp"
+    android:layout_marginEnd="@dimen/_10dp"
+    android:elevation="@dimen/_10dp"
+    app:cardCornerRadius="@dimen/_10dp"
+    android:padding="15dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:background="@color/colorAccentLight"
+        android:id="@+id/listItem">
+
+        <ImageView
+            android:id="@+id/profilePic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/user_profile_picture"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:gravity="center|start"
+            android:text="Kartik Patel"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:textSize="15sp"
+            app:fontFamily="@font/montserrat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profilePic"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center|end"
+            android:text="kp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            app:fontFamily="@font/montserrat"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/name" />
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:gravity="center|start"
+            android:textStyle="italic"
+            android:text="me@kartikpatel.dev"
+            android:textSize="13sp"
+            android:textColor="@color/colorAccent"
+            app:fontFamily="@font/montserrat"
+            app:layout_constraintStart_toStartOf="@id/username"
+            app:layout_constraintEnd_toStartOf="@id/contact"
+            app:layout_constraintTop_toBottomOf="@id/username" />
+
+        <TextView
+            android:id="@+id/contact"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center|end"
+            android:text="7977440556"
+            android:textSize="13sp"
+            app:fontFamily="@font/montserrat"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/email"
+            app:layout_constraintTop_toTopOf="@id/email"
+            app:layout_constraintBottom_toBottomOf="@id/email"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

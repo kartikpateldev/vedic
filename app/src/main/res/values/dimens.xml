@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- view size -->
+    <dimen name="_10dp">10dp</dimen>
+    <dimen name="_20dp">20dp</dimen>
+    <dimen name="_40dp">40dp</dimen>
+    <dimen name="_150dp">150dp</dimen>
+
+    <!-- text size -->
+    <dimen name="_20sp">20sp</dimen>
+    <dimen name="_40sp">40dp</dimen>
+
+</resources>
