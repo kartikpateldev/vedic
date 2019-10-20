@@ -14,6 +14,7 @@
         android:layout_marginBottom="@dimen/_20dp"
         android:text="@string/insert_users_data"
         android:fontFamily="@font/montserrat"
+        android:gravity="center"
         android:textStyle="bold"
         android:textColor="@color/colorAccent"
         android:textSize="@dimen/_20sp"
@@ -26,9 +27,10 @@
         android:id="@+id/frameLayout"
         android:layout_width="@dimen/_150dp"
         android:layout_height="@dimen/_150dp"
-        android:layout_marginTop="@dimen/_20dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/_40dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/heading">
 
         <ImageView
@@ -64,7 +66,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/editName"
         app:layout_constraintStart_toEndOf="@id/nameIcon"
         app:layout_constraintTop_toBottomOf="@id/frameLayout">
 
@@ -78,6 +80,18 @@
             android:hint="@string/name" />
         <requestFocus/>
     </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/editName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit_black_24dp"
+        android:visibility="gone"
+        android:tag="@string/name"
+        app:layout_constraintTop_toTopOf="@id/nameLayout"
+        app:layout_constraintBottom_toBottomOf="@id/nameLayout"
+        app:layout_constraintStart_toEndOf="@id/nameLayout"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
         android:id="@+id/emailIcon"
@@ -96,7 +110,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/editEmail"
         app:layout_constraintStart_toEndOf="@id/emailIcon"
         app:layout_constraintTop_toBottomOf="@+id/nameLayout">
 
@@ -109,6 +123,18 @@
             android:layout_height="wrap_content"
             android:hint="@string/email" />
     </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/editEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit_black_24dp"
+        android:visibility="gone"
+        android:tag="@string/email"
+        app:layout_constraintTop_toTopOf="@id/emailLayout"
+        app:layout_constraintBottom_toBottomOf="@id/emailLayout"
+        app:layout_constraintStart_toEndOf="@id/emailLayout"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
         android:id="@+id/usernameIcon"
@@ -127,7 +153,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/editUsername"
         app:layout_constraintStart_toEndOf="@id/usernameIcon"
         app:layout_constraintTop_toBottomOf="@+id/emailLayout">
 
@@ -139,6 +165,18 @@
             android:layout_height="wrap_content"
             android:hint="@string/username" />
     </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/editUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit_black_24dp"
+        android:visibility="gone"
+        android:tag="@string/username"
+        app:layout_constraintTop_toTopOf="@id/usernameLayout"
+        app:layout_constraintBottom_toBottomOf="@id/usernameLayout"
+        app:layout_constraintStart_toEndOf="@id/usernameLayout"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
     <ImageView
@@ -158,7 +196,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/editContact"
         app:layout_constraintStart_toEndOf="@id/contactIcon"
         app:layout_constraintTop_toBottomOf="@+id/usernameLayout">
 
@@ -171,6 +209,18 @@
             android:layout_height="wrap_content"
             android:hint="@string/contact" />
     </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/editContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit_black_24dp"
+        android:visibility="gone"
+        android:tag="@string/contact"
+        app:layout_constraintTop_toTopOf="@id/contactLayout"
+        app:layout_constraintBottom_toBottomOf="@id/contactLayout"
+        app:layout_constraintStart_toEndOf="@id/contactLayout"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
         android:id="@+id/button"

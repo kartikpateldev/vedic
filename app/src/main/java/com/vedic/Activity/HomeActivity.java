@@ -125,7 +125,6 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void callFetchData(){
-        Log.e("VEDIC:","parameters:"+name+"//"+username+"//"+email+"//"+contact);
 
         Call<ResponseBody> call = RetrofitAdapter.getInstance().fetchData(name,username,email,contact);
         call.enqueue(new Callback<ResponseBody>() {
@@ -138,6 +137,13 @@ public class HomeActivity extends BaseActivity {
                             Toast.LENGTH_SHORT).show();
                     userList.clear();
                     userList.addAll(response.body().getData());
+                    fetchListAdapter.notifyDataSetChanged();
+                }else if(response.body().getMetadata().getResponseCode() != 200){
+                    Toast.makeText(getApplicationContext(),
+                            response.body().getMetadata().getResponseCode()+": "+
+                            response.body().getMetadata().getResponseText(),
+                            Toast.LENGTH_SHORT).show();
+                    userList.clear();
                     fetchListAdapter.notifyDataSetChanged();
                 }
             }

@@ -26,7 +26,7 @@
     <string-array name="choose_profile_photo">
         <item>@string/take_photo</item>
         <item>@string/choose_from_gallery</item>
-        <item>@string/choose_from_uploaded_images</item>
+        <!--<item>@string/choose_from_uploaded_images</item>-->
     </string-array>
 
 </resources>

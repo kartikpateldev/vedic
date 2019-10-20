@@ -26,8 +26,11 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,8 +49,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import okhttp3.MediaType;
@@ -63,13 +68,14 @@ public class FormActivity extends BaseActivity {
     private String name,email,username;
     private Long contact;
     private Button button;
-    private ImageView profilePic, cameraIcon;
+    private ImageView profilePic, cameraIcon, editName, editUsername, editEmail, editContact;
     private final int MY_PERMISSIONS = 0x113;
     private final int REQUEST_CAMERA = 0x114;
     private final int PICK_IMAGE = 0x115;
     private Bitmap selectedBitmap;
     private Context context;
-    private String photoString, mCurrentPhotoPath="", imageURL="";
+    private String photoString, mCurrentPhotoPath="", imageURL="", callFrom;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +83,7 @@ public class FormActivity extends BaseActivity {
         setContentView(R.layout.activity_form);
 
         context = this;
+        callFrom = getIntent().getStringExtra(Constants.CALL_FROM);
 
         heading = findViewById(R.id.heading);
         cameraIcon = findViewById(R.id.cameraIcon);
@@ -84,33 +91,25 @@ public class FormActivity extends BaseActivity {
         button = findViewById(R.id.button);
 
         nameEditText = findViewById(R.id.name);
+        editName = findViewById(R.id.editName);
         nameEditText.setTag(Constants.NAME_TAG);
 
         usernameEditText = findViewById(R.id.username);
+        editUsername = findViewById(R.id.editUsername);
         usernameEditText.setTag(Constants.USERNAME_TAG);
 
         emailEditText = findViewById(R.id.email);
+        editEmail = findViewById(R.id.editEmail);
         emailEditText.setTag(Constants.EMAIL_TAG);
 
         contactEditText = findViewById(R.id.contact);
+        editContact = findViewById(R.id.editContact);
         contactEditText.setTag(Constants.CONTACT_TAG);
 
         Glide.with(this)
                 .load(getDrawable(R.drawable.camera))
                 .apply(RequestOptions.circleCropTransform())
                 .into(cameraIcon);
-
-        if(getIntent().getStringExtra(Constants.CALL_FROM).equals(Constants.VIEW_USER)){
-            User user = (User) getIntent().getSerializableExtra(Constants.USER_DATA);
-            populateUserData(user);
-
-        }else {
-
-            Glide.with(this)
-                    .load(getDrawable(R.drawable.default_profile_pic))
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(profilePic);
-        }
 
         View.OnFocusChangeListener listener = new View.OnFocusChangeListener() {
             @Override
@@ -131,7 +130,6 @@ public class FormActivity extends BaseActivity {
                             }
                             break;
                         case Constants.NAME_TAG:
-                            Log.e("VEDIC:","in name tag case");
                             if(editText.getText()== null || editText.getText().toString().trim().equals("")){
                                 editText.setError(Constants.FIELD_CANT_BE_EMPTY);
                             }else {
@@ -140,7 +138,6 @@ public class FormActivity extends BaseActivity {
                                     String picInitial = name.substring(0,1);
                                     picInitial = picInitial + ((name.contains(" "))?name.charAt(name.indexOf(" ")+1):"");
                                     picInitial = picInitial.toUpperCase();
-                                    Log.e("VEDIC:","picInitial: "+picInitial);
                                     TextDrawable drawable = TextDrawable.builder()
                                             .beginConfig()
                                             .textColor(ResourcesCompat.getColor(context.getResources(),R.color.avatarTextColor,null))
@@ -165,34 +162,47 @@ public class FormActivity extends BaseActivity {
             }
         };
 
-        nameEditText.setOnFocusChangeListener(listener);
-        usernameEditText.setOnFocusChangeListener(listener);
-        emailEditText.setOnFocusChangeListener(listener);
-        contactEditText.setOnFocusChangeListener(listener);
+        if(callFrom.equals(Constants.VIEW_USER)){
+            user = (User) getIntent().getSerializableExtra(Constants.USER_DATA);
+            populateUserData(user);
+
+        }else {
+
+            Glide.with(this)
+                    .load(getDrawable(R.drawable.default_profile_pic))
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(profilePic);
+
+            nameEditText.setOnFocusChangeListener(listener);
+            usernameEditText.setOnFocusChangeListener(listener);
+            emailEditText.setOnFocusChangeListener(listener);
+            contactEditText.setOnFocusChangeListener(listener);
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(mCurrentPhotoPath.trim().equals("")){
+                        Toast.makeText(getApplicationContext(),
+                                Constants.PROVIDE_PROFILE_PICTURE,
+                                Toast.LENGTH_SHORT).show();
+                    }else if(!isvalidInput()){
+                        Toast.makeText(getApplicationContext(),
+                                "Complete the form.",
+                                Toast.LENGTH_SHORT).show();
+                    }else{
+                        Log.e("VEDIC:","calling upload api");
+                        callUploadAPI();
+                    }
+                }
+            });
+        }
+
 
         cameraIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestCameraPermissions();
-            }
-        });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(mCurrentPhotoPath.trim().equals("")){
-                    Toast.makeText(getApplicationContext(),
-                            Constants.PROVIDE_PROFILE_PICTURE,
-                            Toast.LENGTH_SHORT).show();
-                }else if(!isvalidInput()){
-                    Toast.makeText(getApplicationContext(),
-                            "Complete the form.",
-                            Toast.LENGTH_SHORT).show();
-                }else{
-                    Log.e("VEDIC:","calling upload api");
-                    callUploadAPI();
-                }
             }
         });
 
@@ -214,33 +224,96 @@ public class FormActivity extends BaseActivity {
 
     private void populateUserData(User user){
         heading.setText(String.format("%s's Profile",user.getName()));
-        changeEditTextView(false);
-        button.setText(getString(R.string.edit));
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeEditTextView(true);
-                button.setText(getString(R.string.update_data));
-            }
-        });
-        
-        
+        button.setVisibility(View.GONE);
+
         nameEditText.setText(user.getName());
         usernameEditText.setText(user.getUsername());
         emailEditText.setText(user.getEmail());
         contactEditText.setText(String.format(Locale.getDefault(),"%d",user.getContact()));
+
+        nameEditText.setEnabled(false);
+        usernameEditText.setEnabled(false);
+        emailEditText.setEnabled(false);
+        contactEditText.setEnabled(false);
+
+        editName.setVisibility(View.VISIBLE);
+        editUsername.setVisibility(View.VISIBLE);
+        editEmail.setVisibility(View.VISIBLE);
+        editContact.setVisibility(View.VISIBLE);
+
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEditDialog(v);
+            }
+        };
+        editName.setOnClickListener(listener);
+        editUsername.setOnClickListener(listener);
+        editEmail.setOnClickListener(listener);
+        editContact.setOnClickListener(listener);
+
+
         Glide.with(this)
                 .load(user.getImageUrl())
                 .placeholder(getDrawable(R.drawable.default_profile_pic))
                 .apply(RequestOptions.circleCropTransform())
                 .into(profilePic);
+
+
     }
 
-    private void changeEditTextView(boolean enable){
-        nameEditText.setEnabled(enable);
-        usernameEditText.setEnabled(enable);
-        emailEditText.setEnabled(enable);
-        contactEditText.setEnabled(enable);
+    private void showEditDialog(final View v){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(FormActivity.this);
+        alertDialog.setTitle("Enter your "+v.getTag().toString());
+
+        final EditText input = new EditText(FormActivity.this);
+        switch (v.getTag().toString()){
+            case Constants.NAME:
+                input.setText(user.getName());
+                break;
+            case Constants.USERNAME:
+                input.setText(user.getUsername());
+                break;
+            case Constants.EMAIL:
+                input.setText(user.getEmail());
+                break;
+            case Constants.CONTACT:
+                input.setText(String.format(Locale.getDefault(),"%d",user.getContact()));
+                break;
+        }
+        input.requestFocus();
+        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+        input.setSelection(0,input.getText().toString().length());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        alertDialog.setView(input);
+
+        alertDialog.setPositiveButton("Save",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        imm.hideSoftInputFromWindow(input.getWindowToken(),0);
+                        String updatedData = input.getText().toString().trim();
+                        if (updatedData.length() != 0) {
+                            callUpdateAPI(v.getTag().toString(),updatedData);
+                        }else {
+                            Toast.makeText(getApplicationContext(),
+                                    v.getTag().toString()+" can't be empty.",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        imm.hideSoftInputFromWindow(input.getWindowToken(),0);
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
     }
 
     private void requestCameraPermissions(){
@@ -324,10 +397,10 @@ public class FormActivity extends BaseActivity {
                     Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(galleryIntent, PICK_IMAGE);
 
-                } else if (items[item].equals(getString(R.string.choose_from_uploaded_images))) {
+                } /*else if (items[item].equals(getString(R.string.choose_from_uploaded_images))) {
                     dialog.dismiss();
 //                    startActivity(new Intent());
-                }
+                }*/
             }
         });
         builder.show();
@@ -352,7 +425,9 @@ public class FormActivity extends BaseActivity {
                                 .load(selectedBitmap)
                                 .apply(RequestOptions.circleCropTransform())
                                 .into(profilePic);
-
+                        if(callFrom.equals(Constants.VIEW_USER)){
+                            callUploadAPI();
+                        }
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -391,6 +466,9 @@ public class FormActivity extends BaseActivity {
                             .load(selectedBitmap)
                             .apply(RequestOptions.circleCropTransform())
                             .into(profilePic);
+                    if(callFrom.equals(Constants.VIEW_USER)){
+                        callUploadAPI();
+                    }
                 }
                 break;
         }
@@ -444,9 +522,11 @@ public class FormActivity extends BaseActivity {
 
                         ResponseBody responseBody = response.body();
 
-//                        Toast.makeText(getApplicationContext(),
-//                                responseBody.getMetadata().getResponseText()+", "+responseBody.getUrl().get(0),
-//                                Toast.LENGTH_SHORT).show();
+                        if(callFrom.equals(Constants.VIEW_USER)){
+                            Toast.makeText(getApplicationContext(),
+                                    "Profile Picture Updated",
+                                    Toast.LENGTH_SHORT).show();
+                        }
 
                         Set<String> stringSet = new HashSet<>();
                         stringSet.add(responseBody.getUrl().get(0));
@@ -457,8 +537,12 @@ public class FormActivity extends BaseActivity {
                         editor.apply();
 
                         imageURL = responseBody.getUrl().get(0);
-                        Log.e("VEDIC:","calling insert api");
-                        callInsertAPI();
+
+                        if(callFrom.equals(Constants.ADD_USER)){
+                            callInsertAPI();
+                        }else {
+                            callUpdateAPI(Constants.IMAGE,imageURL);
+                        }
 
                     }else if(response.body().getMetadata().getResponseCode() != 200){
 
@@ -524,8 +608,74 @@ public class FormActivity extends BaseActivity {
         }
         //clearAllVariables();
     }
-//    private void clearAllVariables(){
-//        mCurrentPhotoPath="";
-//        imageURL="";
-//    }
+
+    private void callUpdateAPI(String whichData, String data){
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put(Constants.USER_ID_KEY,user.getId());
+
+        switch (whichData){
+            case Constants.NAME:
+                map.put(Constants.NAME_KEY,data);
+                break;
+            case Constants.USERNAME:
+                map.put(Constants.USERNAME_KEY,data);
+                break;
+            case Constants.EMAIL:
+                if(Patterns.EMAIL_ADDRESS.matcher(data.trim()).matches()){
+                    map.put(Constants.EMAIL_KEY,data);
+                }else {
+                    Toast.makeText(getApplicationContext(),
+                            Constants.EMAIL+" is not valid",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                break;
+            case Constants.CONTACT:
+                if(Patterns.PHONE.matcher(data.trim()).matches()){
+                    map.put(Constants.CONTACT_KEY,data);
+                }else {
+                    Toast.makeText(getApplicationContext(),
+                            Constants.CONTACT+" is not valid",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                break;
+            case Constants.IMAGE:
+                map.put(Constants.IMAGE_URL_KEY,data);
+                break;
+        }
+
+        try{
+            Call<ResponseBody> call = RetrofitAdapter.getInstance().updateData(map);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    if(response.body()!=null && response.body().getMetadata().getResponseCode() == 200){
+
+                        ResponseBody responseBody = response.body();
+
+                        Toast.makeText(getApplicationContext(),
+                                responseBody.getMetadata().getResponseText(),
+                                Toast.LENGTH_SHORT).show();
+
+                    }else if(response.body().getMetadata().getResponseCode() != 200){
+
+                        Toast.makeText(getApplicationContext(),
+                                response.body().getMetadata().getResponseCode()+": "+
+                                        response.body().getMetadata().getResponseText(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    // Log error here since request failed\
+                    Log.e("ERROR:",t.toString());
+                    Toast.makeText(getApplicationContext(),t.toString(),Toast.LENGTH_LONG).show();
+                }
+            });
+        }catch (Exception e){
+
+            Log.e("VEDIC:",e.toString());
+        }
+    }
 }

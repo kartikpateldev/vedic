@@ -8,6 +8,6 @@
 
     <!-- text size -->
     <dimen name="_20sp">20sp</dimen>
-    <dimen name="_40sp">40dp</dimen>
+    <dimen name="_40sp">40sp</dimen>
 
 </resources>

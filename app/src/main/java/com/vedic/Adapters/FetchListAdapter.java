@@ -52,7 +52,6 @@ public class FetchListAdapter extends RecyclerView.Adapter<FetchListAdapter.View
         holder.username.setText(item.getUsername());
         holder.email.setText(item.getEmail());
         holder.contact.setText(String.format(Locale.getDefault(),"%d",item.getContact()));
-        Log.e("VEDIC:","msg:-"+item.getImageUrl());
 
         TextDrawable drawable = TextDrawable.builder()
                 .beginConfig()
