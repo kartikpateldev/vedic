@@ -19,5 +19,14 @@
     <string name="edit">Edit</string>
     <string name="update_data">Update Data</string>
     <string name="camera_icon">camera icon</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="choose_from_uploaded_images">Choose from Uploaded Images</string>
+
+    <string-array name="choose_profile_photo">
+        <item>@string/take_photo</item>
+        <item>@string/choose_from_gallery</item>
+        <item>@string/choose_from_uploaded_images</item>
+    </string-array>
 
 </resources>

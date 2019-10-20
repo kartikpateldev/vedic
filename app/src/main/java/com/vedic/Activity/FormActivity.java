@@ -193,23 +193,6 @@ public class FormActivity extends BaseActivity {
                     Log.e("VEDIC:","calling upload api");
                     callUploadAPI();
                 }
-//                if(mCurrentPhotoPath.trim().equals("")){
-//                    Toast.makeText(getApplicationContext(),
-//                            Constants.PROVIDE_PROFILE_PICTURE,
-//                            Toast.LENGTH_SHORT).show();
-//                }
-//                else {
-//                    callUploadAPI();
-//                    if(isvalidInput()){
-//                        if(!imageURL.equals("")){
-//                            callInsertAPI();
-//                        }else {
-//                            Toast.makeText(getApplicationContext(),
-//                                    "Something went wrong while saving profile picture. Please try again.",
-//                                    Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//                }
             }
         });
 
@@ -309,14 +292,14 @@ public class FormActivity extends BaseActivity {
     }
 
     private void showAlertDialog(){
-        final CharSequence[] items = {"Take photo", "Choose from gallery"};
+        final CharSequence[] items = getResources().getStringArray(R.array.choose_profile_photo);
         AlertDialog.Builder builder = new AlertDialog.Builder(FormActivity.this);
-        builder.setTitle("Pick Image");
+//        builder.setTitle("Pick Image");
         builder.setItems(items, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (items[item].equals("Take photo")) {
+                if (items[item].equals(getString(R.string.take_photo))) {
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     // Ensure that there's a camera activity to handle the intent
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -337,9 +320,13 @@ public class FormActivity extends BaseActivity {
                             startActivityForResult(takePictureIntent, REQUEST_CAMERA);
                         }
                     }
-                } else if (items[item].equals("Choose from gallery")) {
+                } else if (items[item].equals(getString(R.string.choose_from_gallery))) {
                     Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(galleryIntent, PICK_IMAGE);
+
+                } else if (items[item].equals(getString(R.string.choose_from_uploaded_images))) {
+                    dialog.dismiss();
+//                    startActivity(new Intent());
                 }
             }
         });
