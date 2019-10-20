@@ -16,7 +16,7 @@ public class SplashScreenActivity extends BaseActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //Do something after 100ms
+                finish();
                 startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
             }
         }, 200);

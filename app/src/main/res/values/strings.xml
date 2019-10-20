@@ -22,6 +22,7 @@
     <string name="take_photo">Take Photo</string>
     <string name="choose_from_gallery">Choose from Gallery</string>
     <string name="choose_from_uploaded_images">Choose from Uploaded Images</string>
+    <string name="saynotogarages">#SayNoToGarages</string>
 
     <string-array name="choose_profile_photo">
         <item>@string/take_photo</item>

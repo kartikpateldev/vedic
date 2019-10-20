@@ -6,90 +6,43 @@
     android:layout_height="match_parent"
     tools:context=".Activity.HomeActivity">
 
-    <!--<android.support.constraint.ConstraintLayout-->
-        <!--android:id="@+id/searchBar"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginStart="20dp"-->
-        <!--android:layout_marginLeft="20dp"-->
-        <!--android:layout_marginEnd="20dp"-->
-        <!--android:layout_marginRight="20dp"-->
-        <!--android:layout_marginTop="10dp"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent">-->
-
-        <!--<ImageView-->
-            <!--android:id="@+id/searchImageView"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--app:layout_constraintEnd_toStartOf="@id/search"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toTopOf="parent"-->
-            <!--android:contentDescription="@string/search"-->
-            <!--app:srcCompat="@drawable/search" />-->
-
-        <!--<EditText-->
-            <!--android:id="@+id/search"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:layout_marginStart="@dimen/_10dp"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:hint="@string/search"-->
-            <!--android:textColor="@color/colorGreyLight"-->
-            <!--android:textSize="15sp"-->
-            <!--app:fontFamily="@font/montserrat"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--app:layout_constraintEnd_toStartOf="@id/cameraImageView"-->
-            <!--app:layout_constraintStart_toEndOf="@id/searchImageView"-->
-            <!--app:layout_constraintTop_toTopOf="parent"-->
-            <!--tools:fontFamily="@font/montserrat" />-->
-
-        <!--<ImageView-->
-            <!--android:id="@+id/cameraImageView"-->
-            <!--android:contentDescription="@string/get_image_link"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toEndOf="@id/search"-->
-            <!--app:layout_constraintTop_toTopOf="parent"-->
-            <!--app:srcCompat="@drawable/camera" />-->
-    <!--</android.support.constraint.ConstraintLayout>-->
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/searchBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginLeft="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
+        android:layout_marginRight="@dimen/_10dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:padding="@dimen/_10dp"
+        android:background="@drawable/search_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fetchList">
 
         <EditText
             android:id="@+id/search"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:maxLines="1"
             android:hint="@string/search"
-            android:textColor="@color/colorGreyLight"
-            android:textSize="15sp"
+            android:inputType="text"
+            android:textSize="18sp"
+            android:textColor="@drawable/edittext_color"
             app:fontFamily="@font/montserrat"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/searchButton"
             tools:fontFamily="@font/montserrat" />
 
         <Button
             android:id="@+id/searchButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:background="@color/colorAccent"
             android:contentDescription="@string/search"
             android:text="@string/search"

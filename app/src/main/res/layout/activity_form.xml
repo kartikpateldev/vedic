@@ -161,6 +161,7 @@
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:maxLines="1"
+            android:inputType="text"
             android:textColor="@drawable/edittext_color"
             android:layout_height="wrap_content"
             android:hint="@string/username" />
