@@ -19,6 +19,6 @@ public class SplashScreenActivity extends BaseActivity {
                 finish();
                 startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
             }
-        }, 200);
+        }, 2000);
     }
 }
