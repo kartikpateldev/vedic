@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,8 +50,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -75,7 +78,9 @@ public class FormActivity extends BaseActivity {
     private Bitmap selectedBitmap;
     private Context context;
     private String photoString, mCurrentPhotoPath="", imageURL="", callFrom;
+    private List<String> savedImages;
     private User user;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +89,13 @@ public class FormActivity extends BaseActivity {
 
         context = this;
         callFrom = getIntent().getStringExtra(Constants.CALL_FROM);
+        savedImages = new ArrayList<>();
 
         heading = findViewById(R.id.heading);
         cameraIcon = findViewById(R.id.cameraIcon);
         profilePic = findViewById(R.id.profilePic);
         button = findViewById(R.id.button);
+        progressBar = findViewById(R.id.progressBar);
 
         nameEditText = findViewById(R.id.name);
         editName = findViewById(R.id.editName);
@@ -114,7 +121,6 @@ public class FormActivity extends BaseActivity {
         View.OnFocusChangeListener listener = new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                Log.e("VEDIC:","in onFocusChange");
                 if(!hasFocus){
 
                     TextInputEditText editText = (TextInputEditText) v;
@@ -191,7 +197,6 @@ public class FormActivity extends BaseActivity {
                                 "Complete the form.",
                                 Toast.LENGTH_SHORT).show();
                     }else{
-                        Log.e("VEDIC:","calling upload api");
                         callUploadAPI();
                     }
                 }
@@ -501,10 +506,14 @@ public class FormActivity extends BaseActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
+        savedImages.add(mCurrentPhotoPath);
         return image;
     }
 
     private void callUploadAPI(){
+
+        progressBar.setVisibility(View.VISIBLE);
+
         try{
             File file = new File(mCurrentPhotoPath);
             RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -551,22 +560,26 @@ public class FormActivity extends BaseActivity {
                                         response.body().getMetadata().getResponseText(),
                                 Toast.LENGTH_SHORT).show();
                     }
+                    progressBar.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     // Log error here since request failed\
+                    progressBar.setVisibility(View.GONE);
                     Log.e("ERROR:",t.toString());
                     Toast.makeText(getApplicationContext(),t.toString(),Toast.LENGTH_LONG).show();
                 }
             });
         }catch (Exception e){
-
+            progressBar.setVisibility(View.GONE);
             Log.e("VEDIC:",e.toString());
         }
     }
 
     private void callInsertAPI(){
+        progressBar.setVisibility(View.VISIBLE);
+
         name = nameEditText.getText().toString();
         username = usernameEditText.getText().toString();
         email = emailEditText.getText().toString();
@@ -584,8 +597,6 @@ public class FormActivity extends BaseActivity {
                                 responseBody.getMetadata().getResponseText(),
                                 Toast.LENGTH_SHORT).show();
 
-
-
                     }else if(response.body().getMetadata().getResponseCode() != 200){
 
                         Toast.makeText(getApplicationContext(),
@@ -593,23 +604,27 @@ public class FormActivity extends BaseActivity {
                                         response.body().getMetadata().getResponseText(),
                                 Toast.LENGTH_SHORT).show();
                     }
+                    progressBar.setVisibility(View.GONE);
+
                 }
 
                 @Override
                 public void onFailure(Call<InsertResponseBody> call, Throwable t) {
                     // Log error here since request failed\
+                    progressBar.setVisibility(View.GONE);
                     Log.e("ERROR:",t.toString());
                     Toast.makeText(getApplicationContext(),t.toString(),Toast.LENGTH_LONG).show();
                 }
             });
         }catch (Exception e){
-
+            progressBar.setVisibility(View.GONE);
             Log.e("VEDIC:",e.toString());
         }
         //clearAllVariables();
     }
 
     private void callUpdateAPI(String whichData, String data){
+        progressBar.setVisibility(View.VISIBLE);
 
         HashMap<String, String> map = new HashMap<>();
         map.put(Constants.USER_ID_KEY,user.getId());
@@ -664,11 +679,13 @@ public class FormActivity extends BaseActivity {
                                         response.body().getMetadata().getResponseText(),
                                 Toast.LENGTH_SHORT).show();
                     }
+                    progressBar.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     // Log error here since request failed\
+                    progressBar.setVisibility(View.GONE);
                     Log.e("ERROR:",t.toString());
                     Toast.makeText(getApplicationContext(),t.toString(),Toast.LENGTH_LONG).show();
                 }
@@ -676,6 +693,21 @@ public class FormActivity extends BaseActivity {
         }catch (Exception e){
 
             Log.e("VEDIC:",e.toString());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for(int i=0;i<savedImages.size();i++){
+            File fdelete = new File(savedImages.get(i));
+            if (fdelete.exists()) {
+                if (fdelete.delete()) {
+                    Log.e("file Deleted :",savedImages.get(i));
+                } else {
+                    Log.e("file not Deleted :", savedImages.get(i));
+                }
+            }
         }
     }
 }

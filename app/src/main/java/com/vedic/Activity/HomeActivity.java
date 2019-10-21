@@ -19,6 +19,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.vedic.Adapters.FetchListAdapter;
@@ -44,6 +45,7 @@ public class HomeActivity extends BaseActivity {
     private FloatingActionButton insertFab;
     private String name,email,username;
     private Long contact = null;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -55,6 +57,7 @@ public class HomeActivity extends BaseActivity {
         search = findViewById(R.id.searchButton);
         searchEditText = findViewById(R.id.search);
         insertFab = findViewById(R.id.insertFab);
+        progressBar = findViewById(R.id.progressBar);
 
         fetchListRecylerView.setLayoutManager(new LinearLayoutManager(this));
         userList = new ArrayList<>();
@@ -126,35 +129,45 @@ public class HomeActivity extends BaseActivity {
 
     private void callFetchData(){
 
-        Call<ResponseBody> call = RetrofitAdapter.getInstance().fetchData(name,username,email,contact);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                if(response.body()!=null && response.body().getMetadata().getResponseCode() == 200){
+        progressBar.setVisibility(View.VISIBLE);
 
-                    Toast.makeText(getApplicationContext(),
-                            response.body().getMetadata().getResponseText(),
-                            Toast.LENGTH_SHORT).show();
-                    userList.clear();
-                    userList.addAll(response.body().getData());
-                    fetchListAdapter.notifyDataSetChanged();
-                }else if(response.body().getMetadata().getResponseCode() != 200){
-                    Toast.makeText(getApplicationContext(),
-                            response.body().getMetadata().getResponseCode()+": "+
-                            response.body().getMetadata().getResponseText(),
-                            Toast.LENGTH_SHORT).show();
-                    userList.clear();
-                    fetchListAdapter.notifyDataSetChanged();
+        try{
+            Call<ResponseBody> call = RetrofitAdapter.getInstance().fetchData(name,username,email,contact);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    if(response.body()!=null && response.body().getMetadata().getResponseCode() == 200){
+
+                        Toast.makeText(getApplicationContext(),
+                                response.body().getMetadata().getResponseText(),
+                                Toast.LENGTH_SHORT).show();
+                        userList.clear();
+                        userList.addAll(response.body().getData());
+                        fetchListAdapter.notifyDataSetChanged();
+                    }else if(response.body().getMetadata().getResponseCode() != 200){
+                        Toast.makeText(getApplicationContext(),
+                                response.body().getMetadata().getResponseCode()+": "+
+                                        response.body().getMetadata().getResponseText(),
+                                Toast.LENGTH_SHORT).show();
+                        userList.clear();
+                        fetchListAdapter.notifyDataSetChanged();
+                    }
+                    progressBar.setVisibility(View.GONE);
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                // Log error here since request failed\
-                Log.e("ERROR:",t.toString());
-                Toast.makeText(getApplicationContext(),t.toString(),Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    // Log error here since request failed\
+                    progressBar.setVisibility(View.GONE);
+
+                    Log.e("ERROR:",t.toString());
+                    Toast.makeText(getApplicationContext(),t.toString(),Toast.LENGTH_LONG).show();
+                }
+            });
+        }catch (Exception e){
+            progressBar.setVisibility(View.GONE);
+            Log.e("VEDIC:",e.toString());
+        }
         name="";email="";username="";contact=null;
     }
 }
